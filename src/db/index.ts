@@ -64,6 +64,13 @@ class DoonDB extends Dexie {
       savings: '++id',
       targets: '++id',
     });
+    // Version 4: Add type index for better filtering (backward compatible)
+    this.version(4).stores({
+      balances: '++id',
+      transactions: '++id, type, category, timestamp, source',
+      savings: '++id',
+      targets: '++id',
+    });
   }
 }
 
