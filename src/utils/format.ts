@@ -31,3 +31,6 @@ export function parseInputRupiah(value: string): number {
 export const EXPENSE_CATEGORIES_HARIAN = ['Makanan', 'Hiburan', 'Kuliah'] as const;
 export const EXPENSE_CATEGORIES_KHUSUS = ['Keperluan Rumah', 'Internet/Pulsa', 'Kuliah', 'Hiburan', 'Motor', 'Style', 'Lainnya'] as const;
 export const ALL_CATEGORIES = [...EXPENSE_CATEGORIES_HARIAN, ...EXPENSE_CATEGORIES_KHUSUS] as const;
+
+// Income (Pemasukan) Categories
+export const INCOME_CATEGORIES = ['Gaji', 'Hadiah', 'Investasi', 'Bekal Wajib', 'Bonus', 'Bisnis', 'Keluarga', 'Kuliah', 'Lainnya'] as const;
