@@ -1,11 +1,12 @@
 import { motion } from 'framer-motion';
-import { Wallet, PiggyBank, BarChart3, Globe } from 'lucide-react';
+import { Wallet, PiggyBank, BarChart3, TrendingUp, Globe } from 'lucide-react';
 import { useTheme } from './ThemeEngine';
 
 const tabs = [
   { id: 'home', label: 'Dompet', icon: Wallet },
   { id: 'savings', label: 'Tabungan', icon: PiggyBank },
   { id: 'analytics', label: 'Analitik', icon: BarChart3 },
+  { id: 'income-analytics', label: 'Analitok', icon: TrendingUp },
   { id: 'market', label: 'Market', icon: Globe },
 ] as const;
 
@@ -16,7 +17,7 @@ export default function BottomNav({ active, onChange }: { active: TabId; onChang
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-30 backdrop-blur-xl border-t" style={{ background: colors.navBg, borderColor: colors.border }}>
-      <div className="flex items-center justify-around max-w-lg mx-auto px-2 py-1">
+      <div className="flex items-center justify-around max-w-lg mx-auto px-2 py-1 overflow-x-auto">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = active === tab.id;
@@ -25,7 +26,7 @@ export default function BottomNav({ active, onChange }: { active: TabId; onChang
               key={tab.id}
               onClick={() => onChange(tab.id)}
               whileTap={{ scale: 0.85 }}
-              className="relative flex flex-col items-center py-2 px-3 rounded-lg transition-all duration-300"
+              className="relative flex flex-col items-center py-2 px-3 rounded-lg transition-all duration-300 flex-shrink-0"
               style={{ color: isActive ? colors.accent : colors.textMuted }}
             >
               {isActive && (
@@ -51,7 +52,7 @@ export default function BottomNav({ active, onChange }: { active: TabId; onChang
                 <Icon size={20} strokeWidth={isActive ? 2.5 : 1.5} />
               </motion.div>
               <motion.span
-                className="text-[10px] mt-0.5 font-medium"
+                className="text-[10px] mt-0.5 font-medium whitespace-nowrap"
                 animate={isActive ? { scale: [1, 1.1, 1] } : { scale: 1 }}
                 transition={{ duration: 0.3 }}
               >
