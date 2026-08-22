@@ -9,6 +9,7 @@ import LiquidBlob from '../components/LiquidBlob';
 import HologramFoil from '../components/HologramFoil';
 import AddBalanceModal from '../components/AddBalanceModal';
 import ExpenseModal from '../components/ExpenseModal';
+import IncomeModal from '../components/IncomeModal';
 import TransferModal from '../components/TransferModal';
 import MigrationModal from '../components/MigrationModal';
 import { formatRupiah, formatDateTime, formatDate } from '../utils/format';
@@ -19,9 +20,11 @@ export default function HomePage({ onDBCleared }: { onDBCleared?: () => void }) 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [showAddBalance, setShowAddBalance] = useState(false);
   const [showExpense, setShowExpense] = useState(false);
+  const [showIncome, setShowIncome] = useState(false);
   const [showTransfer, setShowTransfer] = useState(false);
   const [showMigration, setShowMigration] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
+  const [showActionMenu, setShowActionMenu] = useState(false);
 
   const refresh = useCallback(async () => {
     const b = await getBalances();
@@ -33,6 +36,10 @@ export default function HomePage({ onDBCleared }: { onDBCleared?: () => void }) 
   useEffect(() => { refresh(); }, [refresh]);
 
   const total = (balances?.offline || 0) + (balances?.online || 0);
+
+  const handlePlusClick = () => {
+    setShowActionMenu(true);
+  };
 
   return (
     <div className="px-4 pt-4" style={{ paddingBottom: '2cm' }}>
@@ -110,12 +117,12 @@ export default function HomePage({ onDBCleared }: { onDBCleared?: () => void }) 
                 <ArrowRightLeft size={18} strokeWidth={2.5} className="relative z-10" />
               </motion.button>
               <motion.button
-                onClick={() => setShowAddBalance(true)}
+                onClick={handlePlusClick}
                 whileTap={{ scale: 0.85 }}
                 whileHover={{ scale: 1.1, rotate: 90 }}
                 className="w-11 h-11 rounded-xl flex items-center justify-center shadow-lg relative overflow-hidden"
                 style={{ background: colors.gradient, color: colors.bg }}
-                title="Tambah Saldo"
+                title="Menu Tambah"
               >
                 <motion.div
                   className="absolute inset-0"
@@ -234,13 +241,81 @@ export default function HomePage({ onDBCleared }: { onDBCleared?: () => void }) 
       </StaggeredEntrance>
 
       <AnimatePresence>
+        {showActionMenu && <ActionMenu colors={colors} onAddBalance={() => { setShowAddBalance(true); setShowActionMenu(false); }} onAddIncome={() => { setShowIncome(true); setShowActionMenu(false); }} onClose={() => setShowActionMenu(false)} />}
         {showAddBalance && <AddBalanceModal onClose={() => setShowAddBalance(false)} onComplete={refresh} />}
         {showExpense && <ExpenseModal onClose={() => setShowExpense(false)} onComplete={refresh} />}
+        {showIncome && <IncomeModal onClose={() => setShowIncome(false)} onComplete={refresh} />}
         {showTransfer && <TransferModal onClose={() => setShowTransfer(false)} onComplete={refresh} />}
         {showMigration && <MigrationModal onClose={() => setShowMigration(false)} onImported={refresh} onCleared={() => { if (onDBCleared) onDBCleared(); }} />}
         {showHistory && <HistoryModal transactions={transactions} onClose={() => setShowHistory(false)} onDelete={refresh} />}
       </AnimatePresence>
     </div>
+  );
+}
+
+interface ActionMenuProps {
+  colors: any;
+  onAddBalance: () => void;
+  onAddIncome: () => void;
+  onClose: () => void;
+}
+
+function ActionMenu({ colors, onAddBalance, onAddIncome, onClose }: ActionMenuProps) {
+  return (
+    <>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-40 backdrop-blur-md"
+        style={{ background: 'rgba(0,0,0,0.7)' }}
+        onClick={onClose}
+      />
+      <motion.div
+        initial={{ y: '100%', scale: 0.95 }}
+        animate={{ y: 0, scale: 1 }}
+        exit={{ y: '100%', scale: 0.95 }}
+        transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+        className="fixed inset-x-0 bottom-0 z-50 sm:inset-0 sm:flex sm:items-center sm:justify-center"
+      >
+        <div className="w-full max-w-md rounded-t-3xl sm:rounded-3xl backdrop-blur-xl p-6 max-h-[80vh] overflow-y-auto shadow-2xl" style={{ background: colors.cardAlpha, borderColor: colors.border, borderWidth: 1 }}>
+          <div className="flex items-center justify-between mb-4">
+            <motion.h2 className="text-lg font-bold" style={{ color: colors.text }} initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.1 }}>Pilih Menu</motion.h2>
+            <motion.button onClick={onClose} whileTap={{ scale: 0.85, rotate: 90 }} style={{ color: colors.textMuted }}><X size={20} /></motion.button>
+          </div>
+
+          <div className="space-y-3">
+            <motion.button
+              onClick={onAddBalance}
+              initial={{ y: 10, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.1 }}
+              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.02 }}
+              className="w-full p-4 rounded-2xl text-left transition-all"
+              style={{ background: `${colors.offline}22`, borderColor: colors.offline, borderWidth: 1 }}
+            >
+              <p className="font-semibold text-sm" style={{ color: colors.offline }}>Tambah Saldo</p>
+              <p className="text-xs mt-1" style={{ color: colors.textSecondary }}>Masukkan uang baru ke dompet</p>
+            </motion.button>
+
+            <motion.button
+              onClick={onAddIncome}
+              initial={{ y: 10, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.15 }}
+              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.02 }}
+              className="w-full p-4 rounded-2xl text-left transition-all"
+              style={{ background: `${colors.offline}22`, borderColor: colors.offline, borderWidth: 1 }}
+            >
+              <p className="font-semibold text-sm" style={{ color: colors.offline }}>Catat Pemasukan</p>
+              <p className="text-xs mt-1" style={{ color: colors.textSecondary }}>Catat pemasukan dengan kategori</p>
+            </motion.button>
+          </div>
+        </div>
+      </motion.div>
+    </>
   );
 }
 
