@@ -9,9 +9,10 @@ import AmbientParticles from './components/AmbientParticles';
 import HomePage from './pages/HomePage';
 import SavingsPage from './pages/SavingsPage';
 import AnalyticsPage from './pages/AnalyticsPage';
+import IncomeAnalyticsPage from './pages/IncomeAnalyticsPage';
 import MarketPage from './pages/MarketPage';
 
-const TAB_ORDER: TabId[] = ['home', 'savings', 'analytics', 'market'];
+const TAB_ORDER: TabId[] = ['home', 'savings', 'analytics', 'income-analytics', 'market'];
 
 const pageVariants = {
   enter: (direction: number) => ({
@@ -117,6 +118,7 @@ function AppInner() {
                 {page === 'home' && <HomePage key={`home-${refreshKey}`} onDBCleared={handleDBCleared} />}
                 {page === 'savings' && <SavingsPage key={`savings-${refreshKey}`} />}
                 {page === 'analytics' && <AnalyticsPage key={`analytics-${refreshKey}`} />}
+                {page === 'income-analytics' && <IncomeAnalyticsPage key={`income-analytics-${refreshKey}`} />}
                 {page === 'market' && <MarketPage key={`market-${refreshKey}`} />}
               </motion.div>
             </AnimatePresence>
